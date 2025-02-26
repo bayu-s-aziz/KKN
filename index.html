@@ -221,19 +221,19 @@
 
     </section><!-- /About Section -->
 
-    <!-- galeri Section -->
-<section id="galeri" class="galeri section">
+    <!-- Portfolio Section -->
+<section id="galeri" class="portfolio section">
   <div class="container section-title" data-aos="fade-up">
     <h2>Galeri</h2>
     <p>Yang Telah Kami Kerjakan</p>
   </div>
 
   <div class="container">
-    <ul class="galeri-filters isotope-filters" data-aos="fade-up" data-aos-delay="100" id="galeri-filters">
+    <ul class="portfolio-filters isotope-filters" data-aos="fade-up" data-aos-delay="100" id="portfolio-filters">
       <li data-filter="*" class="filter-active">All</li>
     </ul>
 
-    <div class="row gy-4 isotope-container" data-aos="fade-up" data-aos-delay="200" id="galeri-container">
+    <div class="row gy-4 isotope-container" data-aos="fade-up" data-aos-delay="200" id="portfolio-container">
       <!-- Content will be loaded here dynamically -->
     </div>
   </div>
@@ -336,8 +336,8 @@
     fetch("/assets/img/galeri/gallery.json")
       .then(response => response.json())
       .then(data => {
-        const filtersContainer = document.getElementById("galeri-filters");
-        const galeriContainer = document.getElementById("galeri-container");
+        const filtersContainer = document.getElementById("portfolio-filters");
+        const portfolioContainer = document.getElementById("portfolio-container");
         const filters = new Set();
         const allFiles = [];
 
@@ -356,30 +356,30 @@
         allFiles.forEach(({ folder, file, filterClass }) => {
           const fileExt = file.split('.').pop().toLowerCase();
           const fileName = file.split('/').pop().split('.')[0];
-          const galeriItem = document.createElement("div");
-          galeriItem.classList.add("col-lg-4", "col-md-6", "galeri-item", "isotope-item", `filter-${filterClass}`);
+          const portfolioItem = document.createElement("div");
+          portfolioItem.classList.add("col-lg-4", "col-md-6", "portfolio-item", "isotope-item", `filter-${filterClass}`);
           
           if (fileExt === "mp4") {
-            galeriItem.innerHTML = `
+            portfolioItem.innerHTML = `
               <video controls class="img-fluid">
                 <source src="${file}" type="video/mp4">
                 Your browser does not support the video tag.
               </video>
-              <div class="galeri-info">
+              <div class="portfolio-info">
                 <h4>${folder}</h4>
                 <p>${fileName}</p>
              </div>
             `;
           } else {
-            galeriItem.innerHTML = `
+            portfolioItem.innerHTML = `
               <img src="${file}" class="img-fluid" alt="${fileName}">
-              <div class="galeri-info">
+              <div class="portfolio-info">
                 <h4>${folder}</h4>
                 <p>${fileName}</p>
               </div>
             `;
           }
-          galeriContainer.appendChild(galeriItem);
+          portfolioContainer.appendChild(portfolioItem);
         });
 
         filters.forEach(folder => {
@@ -388,11 +388,11 @@
           filterItem.setAttribute("data-filter", ".filter-" + filterClass);
           filterItem.innerText = folder;
           filterItem.addEventListener("click", function () {
-            document.querySelectorAll(".galeri-filters li").forEach(li => li.classList.remove("filter-active"));
+            document.querySelectorAll(".portfolio-filters li").forEach(li => li.classList.remove("filter-active"));
             filterItem.classList.add("filter-active");
 
             const selectedFilter = filterItem.getAttribute("data-filter");
-            document.querySelectorAll(".galeri-item").forEach(item => {
+            document.querySelectorAll(".portfolio-item").forEach(item => {
               if (selectedFilter === "*" || item.classList.contains(selectedFilter.substring(1))) {
                 item.style.display = "block";
               } else {
