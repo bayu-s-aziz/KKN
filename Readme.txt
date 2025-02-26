@@ -1,6 +1,1 @@
-Thanks for downloading this template!
-
-Template Name: Selecao
-Template URL: https://bootstrapmade.com/selecao-bootstrap-template/
-Author: BootstrapMade.com
-License: https://bootstrapmade.com/license/
+Website KKN UNIGAL Desa Gegempalan Kecamatan Cikoneng Tahun 2025
