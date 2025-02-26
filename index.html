@@ -222,96 +222,22 @@
     </section><!-- /About Section -->
 
     <!-- Portfolio Section -->
-    <section id="portfolio" class="portfolio section">
-      <div class="container section-title" data-aos="fade-up">
-        <h2>Galeri</h2>
-        <p>Yang Telah Kami Kerjakan</p>
-      </div>
+<section id="portfolio" class="portfolio section">
+  <div class="container section-title" data-aos="fade-up">
+    <h2>Galeri</h2>
+    <p>Yang Telah Kami Kerjakan</p>
+  </div>
 
-      <div class="container">
-        <div class="isotope-layout" data-default-filter="*" data-layout="masonry" data-sort="original-order">
-          <?php
-          $baseFolder = 'assets/img/galeri';
-          $allFolders = array_filter(glob($baseFolder . '/*'), 'is_dir');
+  <div class="container">
+    <ul class="portfolio-filters isotope-filters" data-aos="fade-up" data-aos-delay="100" id="portfolio-filters">
+      <li data-filter="*" class="filter-active">All</li>
+    </ul>
 
-          // Urutan yang diinginkan
-          $desiredOrder = ["Program Kerja Utama", "Program Kerja Tambahan", "Program Kerja Bantuan"];
-
-          // Filter dan urutkan folder sesuai daftar di atas
-          $folders = [];
-          $allFiles = []; // Menampung semua file untuk kategori "All"
-
-          foreach ($desiredOrder as $folderName) {
-            $folderPath = $baseFolder . '/' . $folderName;
-            if (in_array($folderPath, $allFolders)) {
-              $folders[$folderName] = $folderPath;
-              $files = glob($folderPath . '/*.{jpg,png,jpeg,gif,mp4}', GLOB_BRACE);
-
-              foreach ($files as $file) {
-                $allFiles[] = ['file' => $file, 'folder' => $folderName]; // Simpan file untuk filter "All"
-              }
-            }
-          }
-
-          // Acak urutan file untuk filter "All"
-          shuffle($allFiles);
-          ?>
-
-          <!-- Filter Buttons -->
-          <ul class="portfolio-filters isotope-filters" data-aos="fade-up" data-aos-delay="100">
-            <li data-filter="*" class="filter-active">All</li>
-            <?php foreach ($folders as $folderName => $folderPath):
-              $filterClass = strtolower(str_replace(' ', '-', $folderName));
-            ?>
-              <li data-filter=".filter-<?php echo $filterClass; ?>"><?php echo $folderName; ?></li>
-            <?php endforeach; ?>
-          </ul>
-
-          <div class="row gy-4 isotope-container" data-aos="fade-up" data-aos-delay="200">
-            <!-- Tampilkan semua item dalam urutan acak untuk filter "All" -->
-            <?php foreach ($allFiles as $fileInfo):
-              $file = $fileInfo['file'];
-              $folderName = $fileInfo['folder'];
-              $filterClass = strtolower(str_replace(' ', '-', $folderName));
-              $fileName = basename($file);
-              $fileExt = pathinfo($file, PATHINFO_EXTENSION);
-            ?>
-              <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-<?php echo $filterClass; ?>">
-                <?php if ($fileExt == 'mp4'): ?>
-                  <video controls class="img-fluid">
-                    <source src="<?php echo $file; ?>" type="video/mp4">
-                    Your browser does not support the video tag.
-                  </video>
-                <?php else: ?>
-                  <img src="<?php echo $file; ?>" class="img-fluid" alt="<?php echo $fileName; ?>">
-                <?php endif; ?>
-
-                <div class="portfolio-info">
-                  <h4><?php echo $folderName; ?></h4>
-                  <p><?php echo pathinfo($fileName, PATHINFO_FILENAME); ?></p>
-                  <?php if ($fileExt == 'mp4'): ?>
-                    <a href="<?php echo $file; ?>" title="<?php echo pathinfo($fileName, PATHINFO_FILENAME); ?>"
-                      class="glightbox preview-link">
-                      <i class="bi bi-play-circle"></i>
-                    </a>
-                  <?php else: ?>
-                    <a href="<?php echo $file; ?>" title="<?php echo pathinfo($fileName, PATHINFO_FILENAME); ?>"
-                      data-gallery="portfolio-gallery-<?php echo $filterClass; ?>"
-                      class="glightbox preview-link">
-                      <i class="bi bi-zoom-in"></i>
-                    </a>
-                  <?php endif; ?>
-                </div>
-              </div>
-            <?php endforeach; ?>
-          </div><!-- End Portfolio Container -->
-        </div>
-      </div>
-    </section>
-
-
-
-
+    <div class="row gy-4 isotope-container" data-aos="fade-up" data-aos-delay="200" id="portfolio-container">
+      <!-- Content will be loaded here dynamically -->
+    </div>
+  </div>
+</section>
 
     <!-- Team Section -->
 <section id="team" class="team section">
@@ -371,6 +297,7 @@
   <!-- Main JS File -->
   <script src="assets/js/main.js"></script>
 
+  <!-- Script Team Auto Load -->
   <script>
     document.addEventListener("DOMContentLoaded", function () {
       fetch("/assets/img/team/team.json")
@@ -402,6 +329,83 @@
         .catch(error => console.error("Error loading team data:", error));
     });
   </script>
+
+<!-- Script Galeri Auto Load -->
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    fetch("/assets/img/galeri/gallery.json")
+      .then(response => response.json())
+      .then(data => {
+        const filtersContainer = document.getElementById("portfolio-filters");
+        const portfolioContainer = document.getElementById("portfolio-container");
+        const filters = new Set();
+        const allFiles = [];
+
+        Object.entries(data).forEach(([folder, files]) => {
+          const filterClass = folder.toLowerCase().replace(/\s+/g, '-');
+          filters.add(folder);
+
+          files.forEach(file => {
+            allFiles.push({ folder, file, filterClass });
+          });
+        });
+
+        // Acak urutan file untuk filter "All"
+        allFiles.sort(() => Math.random() - 0.5);
+
+        allFiles.forEach(({ folder, file, filterClass }) => {
+          const fileExt = file.split('.').pop().toLowerCase();
+          const fileName = file.split('/').pop().split('.')[0];
+          const portfolioItem = document.createElement("div");
+          portfolioItem.classList.add("col-lg-4", "col-md-6", "portfolio-item", "isotope-item", `filter-${filterClass}`);
+          
+          if (fileExt === "mp4") {
+            portfolioItem.innerHTML = `
+              <video controls class="img-fluid">
+                <source src="${file}" type="video/mp4">
+                Your browser does not support the video tag.
+              </video>
+              <div class="portfolio-info">
+                <h4>${folder}</h4>
+                <p>${fileName}</p>
+             </div>
+            `;
+          } else {
+            portfolioItem.innerHTML = `
+              <img src="${file}" class="img-fluid" alt="${fileName}">
+              <div class="portfolio-info">
+                <h4>${folder}</h4>
+                <p>${fileName}</p>
+              </div>
+            `;
+          }
+          portfolioContainer.appendChild(portfolioItem);
+        });
+
+        filters.forEach(folder => {
+          const filterClass = folder.toLowerCase().replace(/\s+/g, '-');
+          const filterItem = document.createElement("li");
+          filterItem.setAttribute("data-filter", ".filter-" + filterClass);
+          filterItem.innerText = folder;
+          filterItem.addEventListener("click", function () {
+            document.querySelectorAll(".portfolio-filters li").forEach(li => li.classList.remove("filter-active"));
+            filterItem.classList.add("filter-active");
+
+            const selectedFilter = filterItem.getAttribute("data-filter");
+            document.querySelectorAll(".portfolio-item").forEach(item => {
+              if (selectedFilter === "*" || item.classList.contains(selectedFilter.substring(1))) {
+                item.style.display = "block";
+              } else {
+                item.style.display = "none";
+              }
+            });
+          });
+          filtersContainer.appendChild(filterItem);
+        });
+      })
+      .catch(error => console.error("Error loading gallery.json:", error));
+  });
+</script>
 
 </body>
 
