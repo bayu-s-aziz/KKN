@@ -60,7 +60,7 @@
               <li><a href="#Proker3">Program Kerja Bantuan</a></li>
 
             </ul>
-          <li><a href="#portfolio">Galeri</a></li>
+          <li><a href="#galeri">Galeri</a></li>
           </li>
           <li><a href="#team">Team</a></li>
 
@@ -221,19 +221,19 @@
 
     </section><!-- /About Section -->
 
-    <!-- Portfolio Section -->
-<section id="portfolio" class="portfolio section">
+    <!-- galeri Section -->
+<section id="galeri" class="galeri section">
   <div class="container section-title" data-aos="fade-up">
     <h2>Galeri</h2>
     <p>Yang Telah Kami Kerjakan</p>
   </div>
 
   <div class="container">
-    <ul class="portfolio-filters isotope-filters" data-aos="fade-up" data-aos-delay="100" id="portfolio-filters">
+    <ul class="galeri-filters isotope-filters" data-aos="fade-up" data-aos-delay="100" id="galeri-filters">
       <li data-filter="*" class="filter-active">All</li>
     </ul>
 
-    <div class="row gy-4 isotope-container" data-aos="fade-up" data-aos-delay="200" id="portfolio-container">
+    <div class="row gy-4 isotope-container" data-aos="fade-up" data-aos-delay="200" id="galeri-container">
       <!-- Content will be loaded here dynamically -->
     </div>
   </div>
@@ -336,8 +336,8 @@
     fetch("/assets/img/galeri/gallery.json")
       .then(response => response.json())
       .then(data => {
-        const filtersContainer = document.getElementById("portfolio-filters");
-        const portfolioContainer = document.getElementById("portfolio-container");
+        const filtersContainer = document.getElementById("galeri-filters");
+        const galeriContainer = document.getElementById("galeri-container");
         const filters = new Set();
         const allFiles = [];
 
@@ -356,30 +356,30 @@
         allFiles.forEach(({ folder, file, filterClass }) => {
           const fileExt = file.split('.').pop().toLowerCase();
           const fileName = file.split('/').pop().split('.')[0];
-          const portfolioItem = document.createElement("div");
-          portfolioItem.classList.add("col-lg-4", "col-md-6", "portfolio-item", "isotope-item", `filter-${filterClass}`);
+          const galeriItem = document.createElement("div");
+          galeriItem.classList.add("col-lg-4", "col-md-6", "galeri-item", "isotope-item", `filter-${filterClass}`);
           
           if (fileExt === "mp4") {
-            portfolioItem.innerHTML = `
+            galeriItem.innerHTML = `
               <video controls class="img-fluid">
                 <source src="${file}" type="video/mp4">
                 Your browser does not support the video tag.
               </video>
-              <div class="portfolio-info">
+              <div class="galeri-info">
                 <h4>${folder}</h4>
                 <p>${fileName}</p>
              </div>
             `;
           } else {
-            portfolioItem.innerHTML = `
+            galeriItem.innerHTML = `
               <img src="${file}" class="img-fluid" alt="${fileName}">
-              <div class="portfolio-info">
+              <div class="galeri-info">
                 <h4>${folder}</h4>
                 <p>${fileName}</p>
               </div>
             `;
           }
-          portfolioContainer.appendChild(portfolioItem);
+          galeriContainer.appendChild(galeriItem);
         });
 
         filters.forEach(folder => {
@@ -388,11 +388,11 @@
           filterItem.setAttribute("data-filter", ".filter-" + filterClass);
           filterItem.innerText = folder;
           filterItem.addEventListener("click", function () {
-            document.querySelectorAll(".portfolio-filters li").forEach(li => li.classList.remove("filter-active"));
+            document.querySelectorAll(".galeri-filters li").forEach(li => li.classList.remove("filter-active"));
             filterItem.classList.add("filter-active");
 
             const selectedFilter = filterItem.getAttribute("data-filter");
-            document.querySelectorAll(".portfolio-item").forEach(item => {
+            document.querySelectorAll(".galeri-item").forEach(item => {
               if (selectedFilter === "*" || item.classList.contains(selectedFilter.substring(1))) {
                 item.style.display = "block";
               } else {
